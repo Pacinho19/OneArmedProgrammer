@@ -2,9 +2,12 @@ package pl.pacinho.onearmedprogrammer.tools;
 
 import pl.pacinho.onearmedprogrammer.config.GameConfig;
 import pl.pacinho.onearmedprogrammer.model.dto.SlotDto;
+import pl.pacinho.onearmedprogrammer.model.dto.SpinDto;
+import pl.pacinho.onearmedprogrammer.model.entity.Game;
 import pl.pacinho.onearmedprogrammer.model.enums.Sign;
 import pl.pacinho.onearmedprogrammer.utils.RandomUtils;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,13 +18,37 @@ import java.util.stream.IntStream;
 
 public class OneArmedTools {
 
-    private static Map<Integer, List<SlotDto>> sectionsMap = initSectionMap();
+    private static final Map<Integer, List<SlotDto>> SECTION_MAP = initSectionMap();
+    private static final Map<Integer, List<Integer>> SPIN_POWERS = initSpinPowers();
+    private static final Map<Integer, Integer> SECTION_SPIN_RATIO = initSectionSpinRatio();
+
+    private static Map<Integer, Integer> initSectionSpinRatio() {
+        return IntStream.rangeClosed(1, GameConfig.SECTION_COUNT)
+                .boxed()
+                .collect(Collectors.toMap(i -> i, i -> RandomUtils.getInt(2, 5)));
+    }
 
     private static Map<Integer, List<SlotDto>> initSectionMap() {
         return IntStream.rangeClosed(1, GameConfig.SECTION_COUNT)
                 .boxed()
                 .collect(Collectors.toMap(i -> i, i -> getSlotSection()));
     }
+
+    private static Map<Integer, List<Integer>> initSpinPowers() {
+        return IntStream.rangeClosed(1, GameConfig.SECTION_COUNT)
+                .boxed()
+                .collect(Collectors.toMap(i -> i, i -> getRandomSpinPowers()));
+    }
+
+    private static List<Integer> getRandomSpinPowers() {
+        List<Integer> integers = IntStream.rangeClosed(0, 100)
+                .boxed()
+                .collect(Collectors.toList());
+
+        Collections.shuffle(integers);
+        return integers;
+    }
+
 
     private static List<SlotDto> getSlotSection() {
         AtomicInteger counter = new AtomicInteger(0);
@@ -51,15 +78,53 @@ public class OneArmedTools {
     }
 
     private static SlotDto getRandomSignFromSection(Integer idx) {
-        List<SlotDto> signs = sectionsMap.get(idx);
+        List<SlotDto> signs = SECTION_MAP.get(idx);
         return signs.get(RandomUtils.getInt(0, signs.size() - 1));
     }
 
     public static SlotDto getSlotFromSection(int slotIdx, int sectionIdx) {
-        return sectionsMap.get(sectionIdx)
+        return SECTION_MAP.get(sectionIdx)
                 .stream()
                 .filter(slotDto -> slotDto.idx() == slotIdx)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Invalid slot index in section " + sectionIdx));
+    }
+
+    public static void spin(Game game, SpinDto spinDto) {
+        SlotTools.getSlotFields()
+                .forEach(field -> SlotTools.setSlotValue(field, game, getSlotAfterSpin(field, game, spinDto)));
+    }
+
+    private static int getSlotAfterSpin(Field field, Game game, SpinDto spinDto) {
+        SlotDto slot = SlotTools.getSlot(game, field);
+        int sectionIdx = SlotTools.getSectionIdx(field.getName());
+
+        SlotDto slotAfterSpin = spinSection(slot, sectionIdx, spinDto);
+        return slotAfterSpin.idx();
+    }
+
+    private static SlotDto spinSection(SlotDto slot, int sectionIdx, SpinDto spinDto) {
+        int spinPower = SPIN_POWERS.get(sectionIdx).get(spinDto.value());
+        int spinRatio = SECTION_SPIN_RATIO.get(sectionIdx);
+        int spinCount = spinRatio * spinPower;
+
+        List<SlotDto> section = SECTION_MAP.get(sectionIdx);
+        int slotIdx = getSlotIdxInSection(section, slot);
+        for (int i = 0; i < spinCount; i++) {
+            if (slotIdx < section.size() - 1) {
+                slotIdx++;
+                continue;
+            }
+            slotIdx = 0;
+        }
+        return section.get(slotIdx);
+    }
+
+    private static int getSlotIdxInSection(List<SlotDto> section, SlotDto slot) {
+        return section.stream()
+                .filter(slot1 -> slot1.idx() == slot.idx())
+                .findFirst()
+                .map(SlotDto::idx)
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find slot  in section"));
     }
 }

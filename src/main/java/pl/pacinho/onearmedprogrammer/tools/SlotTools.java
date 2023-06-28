@@ -15,13 +15,18 @@ public class SlotTools {
     public static void setSlots(Game game, List<SlotDto> slots) {
         getSlotFields()
                 .forEach(field -> {
-                    field.setAccessible(true);
-                    try {
-                        field.set(game, getValue(field.getName(), slots));
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+                    int value = getValue(field.getName(), slots);
+                    setSlotValue(field, game, value);
                 });
+    }
+
+    public static void setSlotValue(Field field, Game game, int value) {
+        field.setAccessible(true);
+        try {
+            field.set(game, value);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static List<Field> getSlotFields() {
@@ -42,7 +47,7 @@ public class SlotTools {
         return OneArmedTools.getSlotFromSection(slotIdx, getSectionIdx(field.getName()));
     }
 
-    private static int getSectionIdx(String fieldName) {
+    public static int getSectionIdx(String fieldName) {
         return Integer.parseInt(fieldName.replace(SLOT_FIELD_PREFIX, ""));
     }
 }

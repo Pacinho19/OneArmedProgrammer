@@ -1,6 +1,7 @@
 package pl.pacinho.onearmedprogrammer.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import pl.pacinho.onearmedprogrammer.model.dto.GameDto;
 import pl.pacinho.onearmedprogrammer.model.dto.SlotDto;
@@ -21,6 +22,8 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final AccountRepository accountRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
 
     public GameDto getDtoByAccount(String accountName) {
         Optional<Game> gameOpt = gameRepository.findByAccountName(accountName);
@@ -41,6 +44,8 @@ public class GameService {
         Game game = gameRepository.findByUuidAndAccountName(gameId, name)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid game id: " + gameId));
 
-        //SPIN
+        OneArmedTools.spin(game, spinDto);
+        gameRepository.save(game);
+        simpMessagingTemplate.convertAndSend("/reload-board/" + game.getUuid(), "");
     }
 }

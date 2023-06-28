@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.pacinho.onearmedprogrammer.config.GameConfig;
 import pl.pacinho.onearmedprogrammer.config.UIConfig;
 import pl.pacinho.onearmedprogrammer.model.dto.GameDto;
 import pl.pacinho.onearmedprogrammer.model.dto.SpinDto;
@@ -20,6 +21,7 @@ public class GameController {
     @GetMapping(UIConfig.HOME)
     public String gameHome(Model model, Authentication authentication) {
         model.addAttribute("game", gameService.getDtoByAccount(authentication.getName()));
+        model.addAttribute("sectionCount", GameConfig.SECTION_COUNT);
         return "home";
     }
 
@@ -29,10 +31,11 @@ public class GameController {
                               @PathVariable(value = "gameId") String gameId) {
         GameDto gameDto = gameService.getDtoByAccount(authentication.getName());
         model.addAttribute("game", gameDto);
+        model.addAttribute("sectionCount", GameConfig.SECTION_COUNT);
         if (!gameDto.getId().equals(gameId)) {
             throw new IllegalArgumentException("Invalid game id: " + gameId);
         }
-        return "fragments/board :: boardFrag";
+        return "fragments/board :: board";
     }
 
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
