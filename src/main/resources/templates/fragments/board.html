@@ -1,17 +1,19 @@
 <div th:fragment="board" id="board" xmlns:th="http://www.w3.org/1999/xhtml">
 
+    <input type="hidden" id="gameId" th:value="${game.id}">
+
     <div style="height:50%;margin-top:2%" >
         <div class="row">
-            <div class="col-md-4" style="text-align:center">
-                <span class="badge badge-info" style="width:50vh;height:50vh;text-align:center">U</span>
-            </div>
-            <div class="col-md-4" style="text-align:center">
-                <span class="badge badge-info" style="width:50vh;height:50vh;text-align:center">U</span>
-            </div>
-            <div class="col-md-4" style="text-align:center">
-                <span class="badge badge-info" style="width:50vh;height:50vh;text-align:center">U</span>
+            <div class="col-md-4" style="text-align:center;display:flex;align-items: center;justify-content: center;" th:each="slot : ${game.slots}">
+                <span class="badge badge-info" style="width:50vh;height:50vh;text-align:center;display:flex;align-items: center;justify-content: center;">
+                    <i th:class="${'bi bi-' + slot.sign.iconClass}" style="font-size:10rem;"></i>
+                </span>
             </div>
         </div>
+    </div>
+
+    <div class="row" style="margin-top:2%;text-align:center">
+        <progress style="width:90%;margin:auto" min="0" max="100"  id="progressBar"></progress>
     </div>
 
     <div class="row" style="margin-top:2%;text-align:center">
