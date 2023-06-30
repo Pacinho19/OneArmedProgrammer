@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @AllArgsConstructor
@@ -12,6 +13,7 @@ import java.util.List;
 public class GameDto {
 
     private String id;
-    private List<SlotDto> slots;
+    private Map<Integer,List<SlotDto>> lastSpin;
+    private String lastSpinJson;
     private int leftRounds;
 }

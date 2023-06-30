@@ -38,7 +38,7 @@ public class OneArmedTools {
     }
 
     private static List<Integer> getRandomSpinPowers() {
-        List<Integer> integers = IntStream.rangeClosed(GameConfig.MIN_POWER_FACTOR, GameConfig.MAX_POWER_FACTOR)
+        List<Integer> integers = IntStream.rangeClosed(1, 100)
                 .boxed()
                 .collect(Collectors.toList());
 

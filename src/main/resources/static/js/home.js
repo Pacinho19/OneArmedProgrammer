@@ -97,21 +97,41 @@ function removeActionListeners() {
   document.removeEventListener('keyup', keyUpFunc);
 }
 
+function onLoadActions(){
+    addActionListeners();
+    spinAnimation();
+}
+
 function spinAnimation() {
+  var gameId = document.getElementById("gameId").value;
+  if (gameId == null)
+    return;
+
+  var lastSpinMapElement = document.getElementById("lastSpinMap");
+  if(lastSpinMapElement==null)
+    return;
+
+  var lastSpinMap =  JSON.parse(lastSpinMapElement.value);
   var sectionCount = document.getElementById("sectionCount").value;
 
-  for (let i = 0; i < sectionCount; i++) {
+  for (let i = 1; i <= sectionCount; i++) {
     setTimeout(() => {
       slotElement = document.getElementById("slot_" + i);
 
-      if(slotElement==null)
-        continue;
+      if (slotElement != null) {
+        var spins =lastSpinMap[""+i]
 
-      slotElement.style.animation = 'pulse 1s normal'
-      slotElement.style.display = "block";
-    }
-      , (i+1)*500);
+        if(spins!==null ){
+            slotElement.className = "bi bi-" + replaceWordSeparator(spins.at(spins.length - 1).sign);
+            slotElement.style.display = "block";
+            slotElement.style.animation = 'pulse 1s normal'
+        }
+      }
+
+    }, (i + 1) * 500);
   }
+}
 
-
+function replaceWordSeparator(signName){
+    return signName.replace('_','-').toLowerCase();
 }

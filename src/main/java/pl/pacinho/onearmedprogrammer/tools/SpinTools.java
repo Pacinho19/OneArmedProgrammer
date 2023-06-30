@@ -1,6 +1,7 @@
 package pl.pacinho.onearmedprogrammer.tools;
 
 import pl.pacinho.onearmedprogrammer.model.dto.SlotDto;
+import pl.pacinho.onearmedprogrammer.model.dto.mapper.SpinToSlotDtoMapper;
 import pl.pacinho.onearmedprogrammer.model.entity.Spin;
 
 import java.util.Comparator;
@@ -30,5 +31,16 @@ public class SpinTools {
         return new SlotDto(lastPosition.getSignIdx(), lastPosition.getSign());
 
 
+    }
+
+    public static Map<Integer, List<SlotDto>> parseLastSpin(List<Spin> lastSpins) {
+        if(lastSpins==null || lastSpins.isEmpty())
+            return null;
+
+        return lastSpins.stream()
+                .collect(Collectors.groupingBy(Spin::getSection))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> SpinToSlotDtoMapper.parseList(entry.getValue())));
     }
 }

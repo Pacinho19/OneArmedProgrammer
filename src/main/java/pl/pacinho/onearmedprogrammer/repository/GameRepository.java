@@ -9,8 +9,7 @@ import java.util.Optional;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
     Optional<Game> findByAccountName(String accountName);
-
     Optional<Game> findByUuidAndAccountName(String uuid, String accountName);
-
     Game findTopByAccountNameOrderByIdDesc(String accountName);
+    Optional<Game> findByAccountNameAndLeftRoundsGreaterThan(String accountName, int leftRounds);
 }

@@ -11,6 +11,7 @@ import pl.pacinho.onearmedprogrammer.model.entity.Account;
 import pl.pacinho.onearmedprogrammer.model.entity.Game;
 import pl.pacinho.onearmedprogrammer.model.entity.Spin;
 import pl.pacinho.onearmedprogrammer.model.entity.SpinRound;
+import pl.pacinho.onearmedprogrammer.model.enums.RoundStatus;
 import pl.pacinho.onearmedprogrammer.repository.AccountRepository;
 import pl.pacinho.onearmedprogrammer.repository.GameRepository;
 import pl.pacinho.onearmedprogrammer.tools.OneArmedTools;
@@ -19,7 +20,6 @@ import pl.pacinho.onearmedprogrammer.tools.SpinTools;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,10 +31,15 @@ public class GameService {
     private final SpinService spinService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-
     public GameDto getDtoByAccount(String accountName) {
-        Optional<Game> gameOpt = gameRepository.findByAccountName(accountName);
-        return gameOpt.map(GameDtoMapper::parse).orElse(null);
+        Game game = gameRepository.findByAccountNameAndLeftRoundsGreaterThan(accountName, 0).orElse(null);
+
+        List<Spin> lastSpin = null;
+        if(game!=null){
+            SpinRound lastSpinRound = spinRoundService.getLastSpinRound(game, RoundStatus.FINISHED);
+            lastSpin = spinService.getSpinForRound(lastSpinRound);
+        }
+        return GameDtoMapper.parse(game, lastSpin);
     }
 
     public Game newGame(String accountName, BigDecimal rate) {
@@ -62,7 +67,7 @@ public class GameService {
         Game game = gameRepository.findByUuidAndAccountName(gameId, name)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid game id: " + gameId));
 
-        SpinRound spinRound = spinRoundService.getLastSpinRound(game);
+        SpinRound spinRound = spinRoundService.getLastSpinRound(game, RoundStatus.IN_PROGRESS);
         List<Spin> lastSpin = spinService.getSpinForRound(spinRound);
         Map<Integer, SlotDto> lastSpinTopValues = SpinTools.getLastSpinTopValues(lastSpin);
 
@@ -72,6 +77,8 @@ public class GameService {
 
         game.decrementLeftRounds();
         gameRepository.save(game);
+
+        spinRound.setStatus(RoundStatus.FINISHED);
 
         spinRoundService.newSpinRound(game);
 
