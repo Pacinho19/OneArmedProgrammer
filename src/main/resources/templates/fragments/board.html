@@ -3,6 +3,7 @@
     <input type="hidden" id="gameId" th:if="${game!=null}" th:value="${game.id}">
     <input type="hidden" id="lastSpinMap" th:if="${game!=null && game.lastSpin!=null}" th:value="${game.lastSpinJson}">
     <input type="hidden" id="sectionCount" th:value="${sectionCount}">
+    <input type="hidden" id="leftRounds" th:if="${game!=null}" th:value="${game.leftRounds}">
 
     <div style="height:50%;margin-top:2%">
         <div class="row">

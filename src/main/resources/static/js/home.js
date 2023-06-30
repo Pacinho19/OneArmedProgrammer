@@ -41,8 +41,11 @@ var keyUpFunc = (e) => {
 }
 
 function addActionListeners() {
-  document.addEventListener('keydown', keyDownFunc);
-  document.addEventListener('keyup', keyUpFunc);
+  var leftRoundsElement = document.getElementById('leftRounds');
+  if(leftRoundsElement==null || (leftRoundsElement!=null && leftRoundsElement.value>0)){
+      document.addEventListener('keydown', keyDownFunc);
+      document.addEventListener('keyup', keyUpFunc);
+  }
 }
 
 function isSpaceKey(e) {
@@ -97,9 +100,9 @@ function removeActionListeners() {
   document.removeEventListener('keyup', keyUpFunc);
 }
 
-function onLoadActions(){
-    addActionListeners();
-    spinAnimation();
+function onLoadActions() {
+  addActionListeners();
+  spinAnimation();
 }
 
 function spinAnimation() {
@@ -108,30 +111,40 @@ function spinAnimation() {
     return;
 
   var lastSpinMapElement = document.getElementById("lastSpinMap");
-  if(lastSpinMapElement==null)
+  if (lastSpinMapElement == null)
     return;
 
-  var lastSpinMap =  JSON.parse(lastSpinMapElement.value);
+  var lastSpinMap = JSON.parse(lastSpinMapElement.value);
   var sectionCount = document.getElementById("sectionCount").value;
+  console.log(lastSpinMap);
 
-  for (let i = 1; i <= sectionCount; i++) {
+  var maxSpinCount = getMaxSpinCount(sectionCount, lastSpinMap);
+  for (let j = 0; j < maxSpinCount; j++) {
     setTimeout(() => {
-      slotElement = document.getElementById("slot_" + i);
-
-      if (slotElement != null) {
-        var spins =lastSpinMap[""+i]
-
-        if(spins!==null ){
-            slotElement.className = "bi bi-" + replaceWordSeparator(spins.at(spins.length - 1).sign);
-            slotElement.style.display = "block";
-            slotElement.style.animation = 'pulse 1s normal'
+      for (let i = 1; i <= sectionCount; i++) {
+        var spins = lastSpinMap["" + i];
+        if (spins.length > j) {
+          slotElement = document.getElementById("slot_" + i);
+          slotElement.className = "bi bi-" + replaceWordSeparator(spins.at(j).sign);
+          slotElement.style.display = "block";
+          slotElement.style.animation = 'pulse 0.5s normal'
         }
       }
-
-    }, (i + 1) * 500);
+    }, (j) * 100);
   }
 }
 
-function replaceWordSeparator(signName){
-    return signName.replace('_','-').toLowerCase();
+function replaceWordSeparator(signName) {
+  return signName.replace('_', '-').toLowerCase();
+}
+
+function getMaxSpinCount(sectionCount, lastSpinMap) {
+  var max = 0;
+  for (let j = 1; j <= sectionCount; j++) {
+    var spinCount = lastSpinMap["" + j].length;
+    if (max <= spinCount) {
+      max = spinCount;
+    }
+  }
+  return max;
 }
