@@ -9,6 +9,7 @@ public class GameDtoMapper {
     public static GameDto parse(Game game) {
         return GameDto.builder()
                 .id(game.getUuid())
+                .leftRounds(game.getLeftRounds())
                 .slots(GameTools.getSlots(game))
                 .build();
     }

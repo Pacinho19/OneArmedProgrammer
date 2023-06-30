@@ -13,4 +13,5 @@ public class GameDto {
 
     private String id;
     private List<SlotDto> slots;
+    private int leftRounds;
 }

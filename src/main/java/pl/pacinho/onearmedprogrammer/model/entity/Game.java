@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import pl.pacinho.onearmedprogrammer.config.GameConfig;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -30,14 +31,15 @@ public class Game {
     private BigDecimal rate;
 
     @Setter
-    private int slot1;
-    @Setter
-    private int slot2;
-    @Setter
-    private int slot3;
+    private int leftRounds;
 
     public Game(Account account) {
+        this.leftRounds = GameConfig.ROUNDS_COUNT;
         this.account = account;
         this.uuid = UUID.randomUUID().toString();
+    }
+
+    public void decrementLeftRounds() {
+        this.leftRounds = leftRounds-1;
     }
 }

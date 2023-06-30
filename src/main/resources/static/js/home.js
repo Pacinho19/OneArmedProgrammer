@@ -4,7 +4,7 @@ function progressLoading() {
   timerWorking = true;
   clearInterval(timer);
 
-  var min = 1;
+  var min = 10;
   var max = document.getElementById("progressBar").max;
 
   var i = 0;
@@ -103,12 +103,14 @@ function spinAnimation() {
   for (let i = 0; i < sectionCount; i++) {
     setTimeout(() => {
       slotElement = document.getElementById("slot_" + i);
+
+      if(slotElement==null)
+        continue;
+
       slotElement.style.animation = 'pulse 1s normal'
       slotElement.style.display = "block";
     }
       , (i+1)*500);
-
-   
   }
 
 

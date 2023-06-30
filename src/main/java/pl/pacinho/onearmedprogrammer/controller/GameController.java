@@ -12,6 +12,8 @@ import pl.pacinho.onearmedprogrammer.model.dto.GameDto;
 import pl.pacinho.onearmedprogrammer.model.dto.SpinDto;
 import pl.pacinho.onearmedprogrammer.service.GameService;
 
+import java.math.BigDecimal;
+
 @RequiredArgsConstructor
 @Controller
 public class GameController {
@@ -41,10 +43,16 @@ public class GameController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PostMapping(UIConfig.GAME_SPIN)
     public void spin(Authentication authentication,
-                       Model model,
-                       @PathVariable(value = "gameId") String gameId,
-                       @RequestBody SpinDto spinDto) {
+                     Model model,
+                     @PathVariable(value = "gameId") String gameId,
+                     @RequestBody SpinDto spinDto) {
         gameService.spin(gameId, authentication.getName(), spinDto);
+    }
+
+    @PostMapping(UIConfig.NEW_GAME)
+    public String spin(Authentication authentication, @RequestParam(name = "rate") BigDecimal rate) {
+        gameService.newGame(authentication.getName(), rate);
+        return "redirect:" + UIConfig.HOME;
     }
 
 }

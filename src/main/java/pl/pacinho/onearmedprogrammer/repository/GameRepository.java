@@ -11,4 +11,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     Optional<Game> findByAccountName(String accountName);
 
     Optional<Game> findByUuidAndAccountName(String uuid, String accountName);
+
+    Game findTopByAccountNameOrderByIdDesc(String accountName);
 }
