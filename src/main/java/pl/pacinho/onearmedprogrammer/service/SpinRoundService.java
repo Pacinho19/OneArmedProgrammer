@@ -22,4 +22,8 @@ public class SpinRoundService {
     public SpinRound getLastSpinRound(Game game, RoundStatus status) {
         return spinRoundRepository.findTopByGameIdAndStatusOrderByIdDesc(game.getId(), status);
     }
+
+    public void save(SpinRound spinRound) {
+        spinRoundRepository.save(spinRound);
+    }
 }

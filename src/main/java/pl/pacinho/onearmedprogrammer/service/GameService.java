@@ -79,6 +79,7 @@ public class GameService {
         gameRepository.save(game);
 
         spinRound.setStatus(RoundStatus.FINISHED);
+        spinRoundService.save(spinRound);
 
         spinRoundService.newSpinRound(game);
 
