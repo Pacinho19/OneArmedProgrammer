@@ -34,9 +34,6 @@ public class GameController {
         GameDto gameDto = gameService.getDtoByAccount(authentication.getName());
         model.addAttribute("game", gameDto);
         model.addAttribute("sectionCount", GameConfig.SECTION_COUNT);
-        if (!gameDto.getId().equals(gameId)) {
-            throw new IllegalArgumentException("Invalid game id: " + gameId);
-        }
         return "fragments/board :: board";
     }
 

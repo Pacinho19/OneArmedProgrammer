@@ -32,13 +32,13 @@ public class OneArmedTools {
     }
 
     private static Map<Integer, List<Integer>> initSpinPowers() {
-        return IntStream.rangeClosed(1, GameConfig.SECTION_COUNT)
+        return IntStream.rangeClosed(0, GameConfig.SECTION_COUNT)
                 .boxed()
                 .collect(Collectors.toMap(i -> i, i -> getRandomSpinPowers()));
     }
 
     private static List<Integer> getRandomSpinPowers() {
-        List<Integer> integers = IntStream.rangeClosed(1, 100)
+        List<Integer> integers = IntStream.rangeClosed(0, 100)
                 .boxed()
                 .collect(Collectors.toList());
 

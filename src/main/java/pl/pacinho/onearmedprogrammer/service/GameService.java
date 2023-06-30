@@ -32,10 +32,10 @@ public class GameService {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public GameDto getDtoByAccount(String accountName) {
-        Game game = gameRepository.findByAccountNameAndLeftRoundsGreaterThan(accountName, 0).orElse(null);
+        Game game = gameRepository.findTopByAccountNameOrderByIdDesc(accountName);
 
         List<Spin> lastSpin = null;
-        if(game!=null){
+        if (game != null) {
             SpinRound lastSpinRound = spinRoundService.getLastSpinRound(game, RoundStatus.FINISHED);
             lastSpin = spinService.getSpinForRound(lastSpinRound);
         }
