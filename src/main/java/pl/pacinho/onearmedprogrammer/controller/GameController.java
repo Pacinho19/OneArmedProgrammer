@@ -10,6 +10,7 @@ import pl.pacinho.onearmedprogrammer.config.GameConfig;
 import pl.pacinho.onearmedprogrammer.config.UIConfig;
 import pl.pacinho.onearmedprogrammer.model.dto.GameDto;
 import pl.pacinho.onearmedprogrammer.model.dto.SpinDto;
+import pl.pacinho.onearmedprogrammer.service.AccountService;
 import pl.pacinho.onearmedprogrammer.service.GameService;
 
 import java.math.BigDecimal;
@@ -19,10 +20,12 @@ import java.math.BigDecimal;
 public class GameController {
 
     private final GameService gameService;
+    private final AccountService accountService;
 
     @GetMapping(UIConfig.HOME)
     public String gameHome(Model model, Authentication authentication) {
         model.addAttribute("game", gameService.getDtoByAccount(authentication.getName()));
+        model.addAttribute("account", accountService.getDtoByLogin(authentication.getName()));
         model.addAttribute("sectionCount", GameConfig.SECTION_COUNT);
         return "home";
     }
@@ -33,6 +36,7 @@ public class GameController {
                               @PathVariable(value = "gameId") String gameId) {
         GameDto gameDto = gameService.getDtoByAccount(authentication.getName());
         model.addAttribute("game", gameDto);
+        model.addAttribute("account", accountService.getDtoByLogin(authentication.getName()));
         model.addAttribute("sectionCount", GameConfig.SECTION_COUNT);
         return "fragments/board :: board";
     }

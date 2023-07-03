@@ -1,84 +1,98 @@
 <div th:fragment="board" id="board" xmlns:th="http://www.w3.org/1999/xhtml">
 
-    <input type="hidden" id="gameId" th:if="${game!=null}" th:value="${game.id}">
-    <input type="hidden" id="lastSpinMap" th:if="${game!=null && game.lastSpin!=null}" th:value="${game.lastSpinJson}">
-    <input type="hidden" id="sectionCount" th:value="${sectionCount}">
-    <input type="hidden" id="leftRounds" th:if="${game!=null}" th:value="${game.leftRounds}">
+    <div th:replace="fragments/topnav :: navbar" />
 
-    <div style="height:50%;margin-top:2%">
-        <div class="row">
-            <div class="col-md-4" style="text-align:center;display:flex;align-items: center;justify-content: center;"
-                th:each="i : ${#numbers.sequence(1,sectionCount)}">
+
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <input type="hidden" id="gameId" th:if="${game!=null}" th:value="${game.id}">
+            <input type="hidden" id="lastSpinMap" th:if="${game!=null && game.lastSpin!=null}" th:value="${game.lastSpinJson}">
+            <input type="hidden" id="sectionCount" th:value="${sectionCount}">
+            <input type="hidden" id="leftRounds" th:if="${game!=null}" th:value="${game.leftRounds}">
+            <input type="hidden" id="winAmount" th:if="${game!=null && game.winAmount>0}" th:value="${game.winAmount}">
+
+            <div style=";margin-top:2%" th:if="${game.winAmount!=null && game.winAmount>0}">
+                <h3 id="winAmountInfo" th:text="${'You Win ' + game.winAmount + ' !'}" style="display:none;text-align:center;"></h3>
+            </div>
+
+            <div style="margin-top:2%">
+                <div class="row">
+                    <div class="col-md-4"
+                         style="text-align:center;display:flex;align-items: center;justify-content: center;"
+                         th:each="i : ${#numbers.sequence(1,sectionCount)}">
                 <span class="badge badge-info"
-                    style="width:50vh;height:50vh;text-align:center;">
+                      style="width:50vh;height:50vh;text-align:center;">
                     <div class="row" style="display:flex;align-items: center;justify-content: center;height:10%">
-                        <i th:id="${'slot_'+i+'_u2'}" style="font-size:3rem;display:none;margin:0 auto;opacity: 0.5;"></i>
+                        <i th:id="${'slot_'+i+'_u2'}"
+                           style="font-size:3rem;display:none;margin:0 auto;opacity: 0.5;"></i>
                     </div>
                     <div class="row" style="display:flex;align-items: center;justify-content: center;height:20%">
-                        <i th:id="${'slot_'+i+'_u1'}" style="font-size:5rem;display:none;margin:0 auto;opacity: 0.7;"></i>
+                        <i th:id="${'slot_'+i+'_u1'}"
+                           style="font-size:5rem;display:none;margin:0 auto;opacity: 0.7;"></i>
                     </div>
                     <div class="row" style="display:flex;align-items: center;justify-content: center;height:40%">
                         <i th:id="${'slot_'+i}" style="font-size:10rem;display:none;margin:0 auto"></i>
                     </div>
                     <div class="row" style="display:flex;align-items: center;justify-content: center;height:20%">
-                        <i th:id="${'slot_'+i+'_d1'}" style="font-size:5rem;display:none;margin:0 auto;opacity: 0.7;"></i>
+                        <i th:id="${'slot_'+i+'_d1'}"
+                           style="font-size:5rem;display:none;margin:0 auto;opacity: 0.7;"></i>
                     </div>
                     <div class="row" style="display:flex;align-items: center;justify-content: center;height:10%">
-                        <i th:id="${'slot_'+i+'_d2'}" style="font-size:3rem;display:none;margin:0 auto;opacity: 0.5;"></i>
+                        <i th:id="${'slot_'+i+'_d2'}"
+                           style="font-size:3rem;display:none;margin:0 auto;opacity: 0.5;"></i>
                     </div>
                 </span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" style="margin-top:2%;text-align:center" th:if="${game!=null && game.leftRounds>0}">
-        <progress style="width:90%;margin:auto" max="100" id="progressBar"></progress>
-    </div>
-
-    <div class="row" style="margin-top:2%;text-align:center" th:if="${game!=null && game.leftRounds>0}">
-        <h3 style="width:100%;text-align:center">Hold space to spin!</h3>
-        <h3 style="width:100%;text-align:center;color:red" th:text="${'Left spins: ' + game.leftRounds}"></h3>
-    </div>
-
-    <div class="row" style="margin-top:2%;text-align:center" th:if="${game==null || game.leftRounds==0}">
-        <button style="width:90%;margin:auto" class="btn btn-primary" data-toggle="modal"
-            data-target="#gameOptionsModal">New game
-        </button>
-    </div>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="gameOptionsModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Game options</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    </div>
                 </div>
-                <form th:action="@{'/one-armed-programmer/game/new'}" th:method="post">
-                    <div class="modal-body">
-                        <span style="display:inline-block">Game mode</span>
-                        <div class="row">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">$</span>
-                                </div>
-                                <input type="text" id="rate" name="rate" min="1" value="50" class="form-control"
-                                    aria-label="Amount (to the nearest dollar)">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">.00</span>
+            </div>
+
+            <div class="row" style="margin-top:2%;text-align:center" th:if="${game!=null && game.leftRounds>0}">
+                <progress style="width:90%;margin:auto" max="100" id="progressBar"></progress>
+            </div>
+
+            <div class="row" style="margin-top:2%;text-align:center" th:if="${game!=null && game.leftRounds>0}">
+                <h3 style="width:100%;text-align:center">Hold space to spin!</h3>
+                <h3 style="width:100%;text-align:center;color:red" th:text="${'Left spins: ' + game.leftRounds}"></h3>
+            </div>
+
+            <div class="row" style="margin-top:2%;text-align:center" th:if="${game==null || game.leftRounds==0 && account.balance>0}">
+                <button style="width:90%;margin:auto" class="btn btn-primary" data-toggle="modal"
+                        data-target="#gameOptionsModal">New game
+                </button>
+            </div>
+
+        </div>
+        <div class="col-md-2"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="gameOptionsModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Game options</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form th:action="@{'/one-armed-programmer/game/new'}" th:method="post">
+                        <div class="modal-body">
+                            <span style="display:inline-block">Game mode</span>
+                            <div class="row">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="text" id="rate" name="rate" min="1" value="50" th:max="${account.balance}" class="form-control" aria-label="Amount (to the nearest dollar)">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Create Game</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Create Game</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-
 </div>

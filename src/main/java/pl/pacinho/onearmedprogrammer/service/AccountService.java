@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.pacinho.onearmedprogrammer.config.CryptoConfig;
 import pl.pacinho.onearmedprogrammer.model.dto.AccountDetailsDto;
+import pl.pacinho.onearmedprogrammer.model.dto.AccountDto;
+import pl.pacinho.onearmedprogrammer.model.dto.mapper.AccountDtoMapper;
 import pl.pacinho.onearmedprogrammer.model.entity.Account;
 import pl.pacinho.onearmedprogrammer.repository.AccountRepository;
 
@@ -37,5 +39,9 @@ public class AccountService implements org.springframework.security.core.userdet
     public Account findByLogin(String name) {
         return accountRepository.findByName(name)
                 .orElse(null);
+    }
+
+    public AccountDto getDtoByLogin(String name) {
+        return AccountDtoMapper.parse(findByLogin(name));
     }
 }

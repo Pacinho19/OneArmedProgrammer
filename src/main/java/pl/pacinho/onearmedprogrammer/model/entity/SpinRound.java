@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import pl.pacinho.onearmedprogrammer.model.enums.RoundStatus;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -27,6 +28,10 @@ public class SpinRound {
     @Setter
     @Enumerated(EnumType.STRING)
     private RoundStatus status;
+
+    @Setter
+    @Column(precision = 15, scale = 2)
+    private BigDecimal winAmount;
 
     public SpinRound(Game game, int number) {
         this.setStatus(RoundStatus.IN_PROGRESS);

@@ -35,11 +35,12 @@ public class GameService {
         Game game = gameRepository.findTopByAccountNameOrderByIdDesc(accountName);
 
         List<Spin> lastSpin = null;
+        SpinRound lastSpinRound = null;
         if (game != null) {
-            SpinRound lastSpinRound = spinRoundService.getLastSpinRound(game, RoundStatus.FINISHED);
+            lastSpinRound = spinRoundService.getLastSpinRound(game, RoundStatus.FINISHED);
             lastSpin = spinService.getSpinForRound(lastSpinRound);
         }
-        return GameDtoMapper.parse(game, lastSpin);
+        return GameDtoMapper.parse(game, lastSpinRound, lastSpin);
     }
 
     public Game newGame(String accountName, BigDecimal rate) {
@@ -53,6 +54,7 @@ public class GameService {
 
         Game game = new Game(account);
         game.setRate(rate);
+        account.setBalance(account.getBalance().subtract(rate));
 
         Game newGame = gameRepository.save(game);
         spinRoundService.newSpinRound(newGame);
@@ -64,6 +66,8 @@ public class GameService {
     }
 
     public void spin(String gameId, String name, SpinDto spinDto) {
+        Account account = accountRepository.getByName(name);
+
         Game game = gameRepository.findByUuidAndAccountName(gameId, name)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid game id: " + gameId));
 
@@ -78,8 +82,15 @@ public class GameService {
         game.decrementLeftRounds();
         gameRepository.save(game);
 
+        BigDecimal winAmount = SpinTools.calculateWinAmount(slotsMap, game.getRate());
         spinRound.setStatus(RoundStatus.FINISHED);
+        spinRound.setWinAmount(winAmount);
         spinRoundService.save(spinRound);
+
+        if (winAmount.compareTo(BigDecimal.ZERO) > 0) {
+            account.setBalance(account.getBalance().add(winAmount));
+            accountRepository.save(account);
+        }
 
         spinRoundService.newSpinRound(game);
 

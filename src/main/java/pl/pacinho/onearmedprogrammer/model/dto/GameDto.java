@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -16,4 +17,5 @@ public class GameDto {
     private Map<Integer,List<SlotDto>> lastSpin;
     private String lastSpinJson;
     private int leftRounds;
+    private BigDecimal winAmount;
 }

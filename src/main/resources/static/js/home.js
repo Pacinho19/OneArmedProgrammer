@@ -139,6 +139,16 @@ function spinAnimation() {
           }
         }
       }
+
+        winAmountElement = document.getElementById("winAmount");
+        for (let i = 1; i <= sectionCount; i++) {
+            if(winAmountElement!=null && winAmountElement.value > 0 && j==maxSpinCount-1){
+                slotElement = document.getElementById("slot_"+ i);
+                slotElement.style.color='green';
+                document.getElementById("winAmountInfo").style.display = "block";
+            }
+        }
+
     }, (j) * 150);
   }
 }
