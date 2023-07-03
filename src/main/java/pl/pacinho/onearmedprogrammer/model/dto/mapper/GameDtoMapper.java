@@ -25,6 +25,7 @@ public class GameDtoMapper {
                 .lastSpin(lastSpinMap)
                 .lastSpinJson(JsonTools.toJson(lastSpinMap))
                 .winAmount(lastFinishedRound != null ? lastFinishedRound.getWinAmount() : null)
+                .spinAnimation(lastFinishedRound != null && !lastFinishedRound.isDisplayed())
                 .build();
     }
 }

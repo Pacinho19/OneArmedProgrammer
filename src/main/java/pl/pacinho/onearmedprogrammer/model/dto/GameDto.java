@@ -18,4 +18,5 @@ public class GameDto {
     private String lastSpinJson;
     private int leftRounds;
     private BigDecimal winAmount;
+    private boolean spinAnimation;
 }

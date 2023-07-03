@@ -11,8 +11,9 @@
             <input type="hidden" id="sectionCount" th:value="${sectionCount}">
             <input type="hidden" id="leftRounds" th:if="${game!=null}" th:value="${game.leftRounds}">
             <input type="hidden" id="winAmount" th:if="${game!=null && game.winAmount>0}" th:value="${game.winAmount}">
+            <input type="hidden" id="spinAnimation" th:if="${game!=null}" th:value="${game.spinAnimation}">
 
-            <div style=";margin-top:2%" th:if="${game.winAmount!=null && game.winAmount>0}">
+            <div style=";margin-top:2%" th:if="${game!=null && game.winAmount!=null && game.winAmount>0}">
                 <h3 id="winAmountInfo" th:text="${'You Win ' + game.winAmount + ' !'}" style="display:none;text-align:center;"></h3>
             </div>
 

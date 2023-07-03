@@ -92,8 +92,19 @@ public class GameService {
             accountRepository.save(account);
         }
 
-        spinRoundService.newSpinRound(game);
+        if (game.getLeftRounds() > 0)
+            spinRoundService.newSpinRound(game);
 
         simpMessagingTemplate.convertAndSend("/reload-board/" + game.getUuid(), "");
+    }
+
+    public void spinAnimationOff(String name, String gameId) {
+        Game game = gameRepository.findByUuidAndAccountName(gameId, name)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid game id: " + gameId));
+
+        SpinRound spinRound = spinRoundService.getLastSpinRound(game, RoundStatus.FINISHED);
+        spinRound.setDisplayed(true);
+
+        spinRoundService.save(spinRound);
     }
 }

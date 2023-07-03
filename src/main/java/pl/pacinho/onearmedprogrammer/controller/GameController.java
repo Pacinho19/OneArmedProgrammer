@@ -56,4 +56,10 @@ public class GameController {
         return "redirect:" + UIConfig.HOME;
     }
 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_SPIN_ANIMATION_OFF)
+    public void spinAnimationOff(Authentication authentication,   @PathVariable(value = "gameId") String gameId) {
+        gameService.spinAnimationOff(authentication.getName(), gameId);
+    }
+
 }

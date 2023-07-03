@@ -33,9 +33,13 @@ public class SpinRound {
     @Column(precision = 15, scale = 2)
     private BigDecimal winAmount;
 
+    @Setter
+    private boolean displayed;
+
     public SpinRound(Game game, int number) {
         this.setStatus(RoundStatus.IN_PROGRESS);
         this.game = game;
         this.number = number;
+        this.displayed = false;
     }
 }

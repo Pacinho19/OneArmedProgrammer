@@ -7,4 +7,5 @@ public class UIConfig {
     public static final String NEW_GAME = GAME + "/new";
     public static final String GAME_BOARD_RELOAD = GAMES_ID + "/board/reload";
     public static final String GAME_SPIN = GAMES_ID + "/spin";
+    public static final String GAME_SPIN_ANIMATION_OFF = GAMES_ID + "/spin-animation-off";
 }
