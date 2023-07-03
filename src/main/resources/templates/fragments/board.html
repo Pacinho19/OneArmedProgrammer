@@ -10,8 +10,22 @@
             <div class="col-md-4" style="text-align:center;display:flex;align-items: center;justify-content: center;"
                 th:each="i : ${#numbers.sequence(1,sectionCount)}">
                 <span class="badge badge-info"
-                    style="width:50vh;height:50vh;text-align:center;display:flex;align-items: center;justify-content: center;">
-                    <i th:id="${'slot_'+i}" style="font-size:10rem;display:none"></i>
+                    style="width:50vh;height:50vh;text-align:center;">
+                    <div class="row" style="display:flex;align-items: center;justify-content: center;height:10%">
+                        <i th:id="${'slot_'+i+'_u2'}" style="font-size:3rem;display:none;margin:0 auto;opacity: 0.5;"></i>
+                    </div>
+                    <div class="row" style="display:flex;align-items: center;justify-content: center;height:20%">
+                        <i th:id="${'slot_'+i+'_u1'}" style="font-size:5rem;display:none;margin:0 auto;opacity: 0.7;"></i>
+                    </div>
+                    <div class="row" style="display:flex;align-items: center;justify-content: center;height:40%">
+                        <i th:id="${'slot_'+i}" style="font-size:10rem;display:none;margin:0 auto"></i>
+                    </div>
+                    <div class="row" style="display:flex;align-items: center;justify-content: center;height:20%">
+                        <i th:id="${'slot_'+i+'_d1'}" style="font-size:5rem;display:none;margin:0 auto;opacity: 0.7;"></i>
+                    </div>
+                    <div class="row" style="display:flex;align-items: center;justify-content: center;height:10%">
+                        <i th:id="${'slot_'+i+'_d2'}" style="font-size:3rem;display:none;margin:0 auto;opacity: 0.5;"></i>
+                    </div>
                 </span>
             </div>
         </div>
@@ -28,7 +42,8 @@
 
     <div class="row" style="margin-top:2%;text-align:center" th:if="${game==null || game.leftRounds==0}">
         <button style="width:90%;margin:auto" class="btn btn-primary" data-toggle="modal"
-            data-target="#gameOptionsModal">New game</button>
+            data-target="#gameOptionsModal">New game
+        </button>
     </div>
 
 

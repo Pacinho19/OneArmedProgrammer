@@ -119,18 +119,27 @@ function spinAnimation() {
   console.log(lastSpinMap);
 
   var maxSpinCount = getMaxSpinCount(sectionCount, lastSpinMap);
+
   for (let j = 0; j < maxSpinCount; j++) {
     setTimeout(() => {
       for (let i = 1; i <= sectionCount; i++) {
         var spins = lastSpinMap["" + i];
         if (spins.length > j) {
-          slotElement = document.getElementById("slot_" + i);
-          slotElement.className = "bi bi-" + replaceWordSeparator(spins.at(j).sign);
-          slotElement.style.display = "block";
-          slotElement.style.animation = 'pulse 0.5s normal'
+          for(let x=-2;x<=2;x++){
+             elementIdSuffix = getElementIdSuffix(x);
+             slotElement = document.getElementById("slot_" + i + elementIdSuffix);
+
+             spinObj = getSpinObject(spins, j, x);
+
+             slotElement.className = "bi bi-" + replaceWordSeparator(spinObj.sign);
+             slotElement.style.display = "block";
+             if(spins.length-1==j && x==0){
+                slotElement.style.animation = 'pulse 0.5s normal'
+             }
+          }
         }
       }
-    }, (j) * 100);
+    }, (j) * 150);
   }
 }
 
@@ -147,4 +156,27 @@ function getMaxSpinCount(sectionCount, lastSpinMap) {
     }
   }
   return max;
+}
+function getElementIdSuffix(x){
+    if(x==0)
+        return "";
+
+    return x<0
+        ? ('_u'+ Math.abs(x))
+        : ('_d'+ Math.abs(x)) ;
+}
+
+function getSpinObject(spins, elementIdx, x){
+    spinsLength = spins.length
+    targetIdx = elementIdx;
+    if(x ==0)
+        targetIdx = elementIdx;
+    else if(elementIdx + x < 0)
+        targetIdx = spinsLength - x;
+    if(elementIdx + x >= spinsLength)
+        targetIdx = x -1;
+    else
+        targetIdx = elementIdx + x;
+
+    return spins.at(targetIdx);
 }
